@@ -18,7 +18,20 @@ class TimersDashboard extends React.Component {
         runningSince: null,
       }
     ]
+	};
+
+	handleCreateFormSubmit = (timer) => {
+		this.createTimer(timer);
 	}
+
+	createTimer = (timer) => {
+		const t = helpers.newTimer(timer);
+		this.setState({
+			timers: this.state.timers.concat(t)
+		});
+	}
+
+	//uuid.v4() external library loaded in index.html
 
 	render() {
 		return (
@@ -26,7 +39,8 @@ class TimersDashboard extends React.Component {
 			<div className="column">
 				<EditableTimerList 
 					timers={this.state.timers}/>
-				<ToggleableTimerForm/>
+				<ToggleableTimerForm
+					onFormSubmit={this.handleCreateFormSubmit}/>
 			</div>
 		</div>
 		);
@@ -38,6 +52,16 @@ class ToggleableTimerForm extends React.Component {
 		isOpen: false,
 	}
 
+	handleFormClose = () => {
+		this.setState({ isOpen: false });
+	}
+
+	handleFormSubmit = (timer) => {
+		// console.log(timer);
+		this.props.onFormSubmit(timer);
+		this.setState({ isOpen: false });
+	}
+
 	handleFormOpen = () => {
 		this.setState({ isOpen: true });
 	};
@@ -45,7 +69,9 @@ class ToggleableTimerForm extends React.Component {
 	render() {
 		if(this.state.isOpen){
 			return (
-				<TimerForm />
+				<TimerForm 
+					onFormSubmit={this.handleFormSubmit}
+					onFormClose={this.handleFormClose}/>
 			);
 
 		} else {
@@ -83,13 +109,14 @@ class EditableTimerList extends React.Component {
 
 class EditableTimer extends React.Component {
 	state = {
-		editFormOpen: true
+		editFormOpen: false
 	};
 
 	render() {
 		if(this.state.editFormOpen){
 			return (
 				<TimerForm
+					id={this.props.id}
 					title={this.props.title}
 					project={this.props.project} 
 				/>
@@ -97,6 +124,7 @@ class EditableTimer extends React.Component {
 		} else {
 			return (
 				<Timer
+					id={this.props.id}
 					title={this.props.title}
 					project={this.props.project}
 					elapsed={this.props.elapsed} 
@@ -109,7 +137,7 @@ class EditableTimer extends React.Component {
 
 class Timer extends React.Component {
 	render() {
-		const elapsedString = window.helpers.renderElapsedString(this.props.elapsed);
+		const elapsedString = helpers.renderElapsedString(this.props.elapsed);
 		// console.log(elapsedString);
 		return (
 		<div className="ui centered card">
@@ -156,8 +184,16 @@ class TimerForm extends React.Component {
 		this.setState({ project: e.target.value });
 	}
 
+	handleSubmit = () => {
+		this.props.onFormSubmit({
+			id: this.props.id,
+			title: this.state.title,
+			project: this.state.project
+		})
+	}
+
 	render() {
-		const submitText = this.props.title ? 'Update' : 'Create';
+		const submitText = this.props.id ? 'Update' : 'Create';
 		return (
 		<div className="ui centered card">
 			<div className="content">
@@ -175,10 +211,12 @@ class TimerForm extends React.Component {
 									onChange={this.handleProjectChange} />
 					</div>
 				</div>
-					<button className="ui basic blue button">
+					<button className="ui basic blue button"
+									onClick={this.handleSubmit}>
 						{submitText}
 					</button>
-					<button className="ui basic red button">
+					<button className="ui basic red button"
+									onClick={this.props.onFormClose}>
 						Cancel
 					</button>
 			</div>
