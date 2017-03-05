@@ -8,6 +8,7 @@ class TimersDashboard extends React.Component {
 	componentDidMount() {
 		this.loadTimersFromServer();
 		setInterval(this.loadTimersFromServer, 5000);
+		console.log(client);
 		
 	}
 

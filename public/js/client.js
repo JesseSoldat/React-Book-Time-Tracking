@@ -12,6 +12,61 @@ window.client = (function () {
 			.then(success);
 	}
 
+	function createTimer(data) {
+		return fetch('/api/timers', {
+			method: 'post',
+			body: JSON.stringify(data),
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			}
+		}).then(checkStatus)
+	}
+
+	function updateTimer(data) {
+		return fetch('/api/timers', {
+			method: 'put',
+			body: JSON.stringify(data),
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			}
+		}).then(checkStatus);
+	}
+
+	function deleteTimer(data) {
+		return fetch('/api/timers', {
+			method: 'delete',
+			body: JSON.stringify(data),
+			headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+		}).then(checkStatus);
+	}
+
+	function startTimer(data) {
+    return fetch('/api/timers/start', {
+      method: 'post',
+      body: JSON.stringify(data),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(checkStatus);
+  }
+
+  function stopTimer(data) {
+    return fetch('/api/timers/stop', {
+      method: 'post',
+      body: JSON.stringify(data),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(checkStatus);
+  }
+
 	function checkStatus(response) {
 		if (response.status >= 200 && response.status < 300) {
 			return response;
@@ -29,7 +84,12 @@ window.client = (function () {
 	}
 
 	return {
-		getTimers
-	}
+		getTimers,
+		createTimer,
+		updateTimer,
+		startTimer,
+		stopTimer,
+		deleteTimer
+	};
 
 })();
