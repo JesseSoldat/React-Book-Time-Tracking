@@ -13,8 +13,10 @@ window.helpers = (function() {
 
 	function renderElapsedString(elapsed, runningSince) {
     let totalElapsed = elapsed;
+
     if (runningSince) {
       totalElapsed += Date.now() - runningSince;
+      //elapsed 1:15  (8:08 am - 7:45 am = 23 min)  totalElapsed = 1:38
     }
   
     return millisecondsToHuman(totalElapsed);
