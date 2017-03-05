@@ -105,6 +105,8 @@ class TimersDashboard extends React.Component {
 			timers: this.state.timers.map((timer) => {
 				if(timer.id === timerId) {
 					const lastElapsed = now - timer.runningSince;
+					//take time we stopped timer (now) -
+					//time we started the timer (timer.runningSince)
 					return Object.assign({}, timer, {
 						elapsed: timer.elapsed + lastElapsed,
 						runningSince: null
